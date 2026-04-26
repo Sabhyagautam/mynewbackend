@@ -20,8 +20,7 @@ const io = new Server(httpServer, {
       'http://localhost:5173',
       'http://localhost:5174',
       'http://localhost:3000',
-      'https://rapidcare-frontend-xxxxx.vercel.app', // Replace with your actual frontend URL
-      /\.vercel\.app$/ // Allow all Vercel preview deployments
+      /\.vercel\.app$/ // Allow all Vercel deployments
     ],
     methods: ['GET', 'POST'],
     credentials: true 
@@ -254,21 +253,29 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 4000;
 
-httpServer.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use.`);
-    console.error(`👉 Run this to fix it: kill -9 $(lsof -ti:${PORT})`);
-    console.error(`   Then restart: npm run dev`);
-    process.exit(1);
-  } else {
-    throw err;
-  }
-});
+// Only start server if not in Vercel serverless environment
+if (process.env.VERCEL !== '1') {
+  httpServer.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use.`);
+      console.error(`👉 Run this to fix it: kill -9 $(lsof -ti:${PORT})`);
+      console.error(`   Then restart: npm run dev`);
+      process.exit(1);
+    } else {
+      throw err;
+    }
+  });
 
-httpServer.listen(PORT, () => {
-  console.log(`\n🚀 Rapid Care Server running on port ${PORT}`);
-  console.log(`🔌 Socket.io ready`);
-  console.log(`📦 MongoDB connecting...`);
-  console.log(`\n   Patient app:  http://localhost:5173`);
-  console.log(`   Driver app:   http://localhost:5174\n`);
-});
+  httpServer.listen(PORT, () => {
+    console.log(`\n🚀 Rapid Care Server running on port ${PORT}`);
+    console.log(`🔌 Socket.io ready`);
+    console.log(`📦 MongoDB connecting...`);
+    console.log(`\n   Patient app:  http://localhost:5173`);
+    console.log(`   Driver app:   http://localhost:5174\n`);
+  });
+} else {
+  console.log('Running in Vercel serverless mode');
+}
+
+// Export for Vercel
+export default app;
