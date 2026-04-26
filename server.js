@@ -35,6 +35,15 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'RapidCare Backend API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Routes
 app.use('/api/patients', patientRoutes);
 app.use('/api/ambulances', ambulanceRoutes);
