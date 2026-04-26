@@ -20,6 +20,7 @@ const io = new Server(httpServer, {
       'http://localhost:5173',
       'http://localhost:5174',
       'http://localhost:3000',
+      'https://mynewfrontend.vercel.app',
       /\.vercel\.app$/ // Allow all Vercel deployments
     ],
     methods: ['GET', 'POST'],
